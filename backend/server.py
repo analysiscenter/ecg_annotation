@@ -7,76 +7,68 @@ import argparse
 from flask import Flask
 from flask_socketio import SocketIO
 
-
-def create_logger(logger_config_path):
-    with open(logger_config_path, encoding="utf-8") as logger_config:
-        logger_config = json.load(logger_config)
-    logging.config.dictConfig(logger_config)
-    logger = logging.getLogger("server")
-    return logger
+from api.api import AnnotationNamespace as Namespace
 
 
-def get_config(path, required_keys):
-    with open(path, encoding="utf-8") as server_config:
+def get_server_config(server_config_path, required_keys):
+    with open(server_config_path, encoding="utf-8") as server_config:
         server_config = json.load(server_config)
     key_diff = set(server_config) - required_keys
     if key_diff:
         raise KeyError("{} keys are not found in the server config".format(sorted(key_diff)))
+    server_config = {key: server_config[key] for key in required_keys}
     return server_config
 
 
-def parse_demo_args(args):
-    REQUIRED_KEYS = {"logger_config"}
-    server_config = get_config(args.config, REQUIRED_KEYS)
-    logger = create_logger(server_config["logger_config"])
-    logger.info("Creating demo namespace")
-    from api.demo.api import DemoNamespace as Namespace
-    namespace = Namespace("/api")
-    logger.info("Namespace created")
-    return namespace, logger
+def get_logger_config(logger_config_path):
+    with open(logger_config_path, encoding="utf-8") as logger_config:
+        logger_config = json.load(logger_config)
+    return logger_config
 
 
-def parse_annotation_args(args):
+def get_configs():
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    default_config_path = os.path.join(current_dir, "config", "server_config.json")
+    parser = argparse.ArgumentParser(description="A backend for an ECG annotation tool.")
+    parser.add_argument("-c", "--config", help="A path to a json file with server configuration.",
+                        default=default_config_path)
+    args = parser.parse_args()
+
     REQUIRED_KEYS = {
         "watch_dir",
         "dump_dir",
         "annotation_list_path",
         "annotation_count_path",
         "submitted_annotation_path",
-        "logger_config",
+        "logger_config_path",
     }
-    server_config = get_config(args.config, REQUIRED_KEYS)
-    logger = create_logger(server_config["logger_config"])
+    server_config = get_server_config(args.config, REQUIRED_KEYS)
+    logger_config_path = server_config.pop("logger_config_path")
+    logger_config = get_logger_config(logger_config_path)
+    return server_config, logger_config
+
+
+def create_logger(logger_config):
+    logging.config.dictConfig(logger_config)
+    logger = logging.getLogger("server")
+    logger.info("Logger created")
+    return logger
+
+
+def create_namespace(server_config):
+    logger = logging.getLogger("server")
     logger.info("Creating annotation namespace")
-    from api.api import AnnotationNamespace as Namespace
     namespace = Namespace(server_config["watch_dir"], server_config["dump_dir"],
                           server_config["annotation_list_path"], server_config["annotation_count_path"],
                           server_config["submitted_annotation_path"], "/api")
     logger.info("Namespace created")
-    return namespace, logger
-
-
-def parse_args():
-    parser = argparse.ArgumentParser(description="A backend for an ECG/CT demo and an ECG annotation tool.")
-    subparsers = parser.add_subparsers(dest="launch_mode")
-    subparsers.required = True
-
-    parser_demo = subparsers.add_parser("demo", help="Launch an ECG/CT demo")
-    parser_demo.add_argument("-c", "--config", help="A path to a json file with server configuration",
-                             default=os.path.join(".", "api", "demo", "server_config.json"))
-    parser_demo.set_defaults(parse=parse_demo_args)
-
-    parser_annotation = subparsers.add_parser("annotation", help="Launch an ECG annotation tool")
-    parser_annotation.add_argument("-c", "--config", help="A path to a json file with server configuration",
-                                   default=os.path.join(".", "config", "server_config.json"))
-    parser_annotation.set_defaults(parse=parse_annotation_args)
-
-    args = parser.parse_args()
-    return args.parse(args)
+    return namespace
 
 
 def main():
-    namespace, logger = parse_args()
+    server_config, logger_config = get_configs()
+    logger = create_logger(logger_config)
+    namespace = create_namespace(server_config)
 
     app = Flask(__name__)
     socketio = SocketIO(app)
