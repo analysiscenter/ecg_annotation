@@ -1,0 +1,20 @@
+# CardIO requirements
+numpy>=1.13.1
+scipy>=0.19.1
+pandas>=0.21.1
+scikit-learn>=0.19.1
+numba>=0.35.0
+pywavelets>=0.5.2
+matplotlib>=2.1.0
+dill>=0.2.7.1
+pydicom>=0.9.9
+pyedflib>=0.1.11
+wfdb==1.3.9
+pint>=0.8.1
+
+# Backend requirements
+feather-format>=0.4.0
+watchdog>=0.8.3
+eventlet>=0.22.1
+flask>=0.12.2
+flask_socketio>=2.9.2
