@@ -10,7 +10,6 @@ from collections import OrderedDict
 
 import numpy as np
 import pandas as pd
-from watchdog.observers import Observer
 from watchdog.events import FileSystemEvent, RegexMatchingEventHandler
 
 from .loader import load_data
@@ -24,11 +23,10 @@ def synchronized(method):
 
 
 class EcgDirectoryHandler(RegexMatchingEventHandler):
-    def __init__(self, namespace, watch_dir, dump_dir, annotation_list_path, annotation_count_path,
-                 submitted_annotation_path, *args, **kwargs):
+    def __init__(self, watch_dir, dump_dir, annotation_list_path, annotation_count_path, submitted_annotation_path,
+                 *args, **kwargs):
         self.pattern = "^.+\.xml$"
         super().__init__([self.pattern], *args, **kwargs)
-        self.namespace = namespace
         self.watch_dir = watch_dir
         self.dump_dir = dump_dir
         self.annotation_list_path = annotation_list_path
@@ -49,12 +47,6 @@ class EcgDirectoryHandler(RegexMatchingEventHandler):
         self._load_submitted_annotation()
         self.logger.info("Initial loading finished")
         self._log_data()
-
-        self.logger.info("Launching directory observer")
-        self.observer = Observer()
-        self.observer.schedule(self, self.watch_dir)
-        self.observer.start()
-        self.logger.info("Directory observer launched")
 
     def _log_data(self):
         file_names = [signal_data["file_name"] for sha, signal_data in self.data.items()]

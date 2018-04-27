@@ -7,7 +7,7 @@ import argparse
 from flask import Flask
 from flask_socketio import SocketIO
 
-from api.api import AnnotationNamespace as Namespace
+from api.api import create_namespace
 
 
 def get_server_config(server_config_path, required_keys):
@@ -53,16 +53,6 @@ def create_logger(logger_config):
     logger = logging.getLogger("server")
     logger.info("Logger created")
     return logger
-
-
-def create_namespace(server_config):
-    logger = logging.getLogger("server")
-    logger.info("Creating annotation namespace")
-    namespace = Namespace(server_config["watch_dir"], server_config["dump_dir"],
-                          server_config["annotation_list_path"], server_config["annotation_count_path"],
-                          server_config["submitted_annotation_path"], "/api")
-    logger.info("Namespace created")
-    return namespace
 
 
 def main():

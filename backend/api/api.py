@@ -1,14 +1,30 @@
+import logging
+
+from watchdog.observers import Observer
+
 from .handler import EcgDirectoryHandler
 from .api_base import BaseNamespace
 
 
-class AnnotationNamespace(BaseNamespace):
-    def __init__(self, watch_dir, dump_dir, annotation_list_path, annotation_count_path, submitted_annotation_path,
-                 *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.handler = EcgDirectoryHandler(self, watch_dir, dump_dir, annotation_list_path, annotation_count_path,
-                                           submitted_annotation_path, ignore_directories=True)
+def create_namespace(server_config):
+    logger = logging.getLogger("server." + __name__)
 
+    logger.info("Creating annotation namespace")
+    namespace = AnnotationNamespace("/api")
+    handler = EcgDirectoryHandler(**server_config, ignore_directories=True)
+    namespace.handler = handler
+    handler.namespace = namespace
+    logger.info("Namespace created")
+
+    logger.info("Launching directory observer")
+    observer = Observer()
+    observer.schedule(handler, server_config["watch_dir"])
+    observer.start()
+    logger.info("Directory observer launched")
+    return namespace
+
+
+class AnnotationNamespace(BaseNamespace):
     def on_ECG_GET_ANNOTATION_LIST(self, data, meta):
         self._safe_call(self.handler._get_annotation_list, data, meta, "ECG_GET_ANNOTATION_LIST",
                         "ECG_GOT_ANNOTATION_LIST")
