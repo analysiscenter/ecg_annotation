@@ -1,0 +1,326 @@
+html {
+    font-size: 4vmin;
+}
+
+body {
+    line-height: 1;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 100;
+    font-size: 4vmin;
+}
+
+.page {
+    padding-top: 0.25rem;
+    font-family: "Roboto Condensed", sans-serif;
+    font-weight: 100;
+}
+
+.page div {
+    margin: 0;
+}
+
+.page span {
+    font-size: 0.6rem;
+}
+
+.page .left-column {
+    padding-left: 0.2rem;
+    width: 5.5rem;
+    float: left;
+    display: block;
+}
+
+.page .middle-column {
+    flex-grow: 1;
+    max-width: calc(100% - 13.5rem);
+    display: block;
+    overflow: auto;
+}
+
+.page .right-column {
+    width: 8rem;
+    flex: right;
+    display: block;
+    padding-left: 0.5rem;
+}
+
+.page .vline {
+    border-left: 1px solid black;
+    height: calc(100vh - 0.5rem);
+}
+
+.loading {
+    height: 100vh;
+	margin-top: 20%;
+    text-align: center;
+}
+
+.page .centered-text {
+    font-size: 1.2rem;
+    text-align: center;
+    padding-top: 5rem;
+    flex-grow: 100;
+}
+
+.page .row {
+    padding: 0;
+    font-size: 0.6rem;
+    margin-right: 0;
+    margin-left: 0;
+}
+
+.page a {
+    font-weight: 100;
+    text-decoration: none;
+}
+
+.page a:hover { 
+    color: red;
+}
+
+.page .ecg-list {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    height: 75vh;
+    width: 4rem;
+    overflow-y: auto;
+    font-size: 0.6rem;
+	font-family: "Roboto Condensed", sans-serif;
+	font-weight: 100;
+}
+
+.page .ecg-list.form-control {
+    padding: 0;
+    font-family: "Roboto Condensed", sans-serif;
+    font-weight: 100;
+}
+
+.page .ecg-item-name {
+    margin-left: 0.1rem;
+    font-weight: 100;
+}
+
+.page .row .margin-top {
+    margin-top: 0.5rem;
+}
+
+.page .headline {
+    margin-top: 0.25rem;
+    font-size: 0.8rem;
+	font-family: "Roboto Condensed", sans-serif;
+	font-weight: 400;
+}
+
+.page .headline.subsection {
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.6rem;
+}
+
+.page .headline.subsection2 {
+    font-size: 0.6rem;
+    padding-top: 0.5rem;
+    font-size: 0.6rem;
+}
+
+.page a {
+    margin-left: 0.5rem;
+}
+
+.page a.inline-controll {
+    margin-top: 0.2rem;
+    margin-left: 0;
+}
+
+.page .btn.active.focus, .btn.active:focus, .btn.focus, .btn:active.focus, .btn:active:focus, .btn:focus {
+    outline: 0;
+    box-shadow: 0 0 0 0 rgba(0,123,255,0);
+}
+
+.page .button-group {
+    padding: 0;
+    margin-bottom: 0.2rem;
+}
+
+.page button.set-channel {
+	padding: 0;
+	margin-top: 0.5rem;
+    margin-right: 0;
+	width: 1.5rem;
+	height: 1.2rem;
+	font-size: 0.6rem;
+	font-family: "Roboto Condensed", sans-serif;
+	font-weight: 100;
+    text-align: center;
+}
+
+.page .row.common-items-list{
+    margin-top: 0;
+    overflow-y: auto;
+    max-height: 24vh;
+    padding: 0;
+}
+
+.page .search-line {
+    margin-top: 0.5rem;
+    height: 1.2rem;
+    padding-left: 0.2rem;
+    overflow-y: scroll;
+    font-size: 0.6rem;
+    font-family: "Roboto Condensed", sans-serif;
+    font-weight: 100;
+}
+
+.page .row .short-list{
+    margin-top: 0.5rem;
+    overflow-y: auto;
+    max-height: 38vh; 
+    padding: 0;
+    display: inline-block;
+}
+
+.page .row .full-list{
+    margin-top: 0.5rem;
+    overflow-y: auto;
+    max-height: 62.5vh;
+    padding: 0;
+    display: inline-block;
+}
+
+.page .group-name {
+	font-weight: 400;
+    margin-left: 0.2rem;
+}
+
+.page .collapsed-group {
+	padding: 0;
+    margin-bottom: 0.5rem;
+}
+
+.page .enrolled-group {
+	padding: 0;
+    margin: 0;
+}
+
+.page .group-items {
+    margin-top: 0.2rem;
+    margin-left: 0;
+}
+
+.page .checkbox {
+    margin-bottom: 0.1rem;
+}
+
+.page .checkbox input {
+    margin-right: 0.2em;
+}
+
+.page .checkbox label {
+    display: block;
+    padding-left: 0.7em;
+    text-indent: -.7em;
+}
+
+.page .row .bottom {
+    position: fixed;
+    bottom: 3vh;
+}
+
+.page .row .zip-bottom {
+    position: fixed;
+    bottom: 3vh;
+}
+
+.page button.submit {
+	padding: 0;
+	margin-top: 0.5rem;
+	width: 7.2rem;
+	height: 1.3rem;
+	font-size: 0.6rem;
+	font-family: "Roboto Condensed", sans-serif;
+	font-weight: 100;
+    text-align: center;
+}
+
+.page .zip-bottom button.submit {
+    padding: 0;
+    margin-top: 0.5rem;
+    width: 4rem;
+    height: 1.3rem;
+    font-size: 0.6rem;
+    font-family: "Roboto Condensed", sans-serif;
+    font-weight: 100;
+    text-align: center;
+}
+
+.popup {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    background-color: rgba(0,0,0, 0.5);
+}
+.popup-inner {
+    position: absolute;
+    left: calc(50% - 10rem);
+    right: calc(50% - 10rem);
+    top: calc(50% - 4rem);
+    bottom: calc(50% - 1rem);
+    margin: auto;
+    background: white;
+    border-radius: 20px;
+}
+
+.popup-inner .popup-text {
+    font-size: 0.8rem;
+    margin-top: 0.7rem;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+}
+
+.popup-inner .popup-text span {
+    margin-top: 1.2rem;
+    font-size: 0.8rem;
+}
+
+.popup-inner .button-left {
+    padding: 0;
+    margin-top: 0.7rem;
+    margin-left: 2rem;
+    width: 5rem;
+    height: 1.2rem;
+    font-size: 0.6rem;
+    font-family: "Roboto Condensed", sans-serif;
+    font-weight: 100;
+    text-align: center;
+}
+
+.popup-inner .button-right {
+    padding: 0;
+    margin-top: 0.7rem;
+    margin-left: auto;
+    margin-right: 2rem;
+    width: 5rem;
+    height: 1.2rem;
+    font-size: 0.6rem;
+    font-family: "Roboto Condensed", sans-serif;
+    font-weight: 100;
+    text-align: center;
+}
+
+.popup-inner .button-middle {
+    padding: 0;
+    margin-top: 0.9rem;
+    margin-left: auto;
+    margin-right: auto;
+    width: 9rem;
+    height: 1.2rem;
+    font-size: 0.6rem;
+    font-family: "Roboto Condensed", sans-serif;
+    font-weight: 100;
+    text-align: center;
+}
