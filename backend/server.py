@@ -48,7 +48,7 @@ def parse_annotation_args(args):
     server_config = get_config(args.config, REQUIRED_KEYS)
     logger = create_logger(server_config["logger_config"])
     logger.info("Creating annotation namespace")
-    from api.annotation.api import AnnotationNamespace as Namespace
+    from api.api import AnnotationNamespace as Namespace
     namespace = Namespace(server_config["watch_dir"], server_config["dump_dir"],
                           server_config["annotation_list_path"], server_config["annotation_count_path"],
                           server_config["submitted_annotation_path"], "/api")
@@ -68,7 +68,7 @@ def parse_args():
 
     parser_annotation = subparsers.add_parser("annotation", help="Launch an ECG annotation tool")
     parser_annotation.add_argument("-c", "--config", help="A path to a json file with server configuration",
-                                   default=os.path.join(".", "api", "annotation", "server_config.json"))
+                                   default=os.path.join(".", "config", "server_config.json"))
     parser_annotation.set_defaults(parse=parse_annotation_args)
 
     args = parser.parse_args()
@@ -83,7 +83,7 @@ def main():
     socketio.on_namespace(namespace)
 
     logger.info("Server launched")
-    socketio.run(app, port=9090)
+    socketio.run(app, host="0.0.0.0", port=9090)
 
 
 if __name__ == "__main__":

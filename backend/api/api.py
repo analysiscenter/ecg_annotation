@@ -1,5 +1,5 @@
 from .handler import EcgDirectoryHandler
-from ..api_base import BaseNamespace
+from .api_base import BaseNamespace
 
 
 class AnnotationNamespace(BaseNamespace):
