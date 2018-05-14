@@ -1,4 +1,5 @@
 import os
+import sys
 import re
 import stat
 import json
@@ -244,6 +245,10 @@ class EcgDirectoryHandler(RegexMatchingEventHandler):
         self.logger.info("Dump finished into {}".format(archive_name))
         self._log_data()
         self.namespace.on_ECG_GET_LIST({}, {})
+
+    @synchronized
+    def _shutdown(self, data, meta):
+        sys.exit()
 
     @synchronized
     def on_created(self, event):

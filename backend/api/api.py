@@ -44,3 +44,6 @@ class AnnotationNamespace(BaseNamespace):
 
     def on_ECG_DUMP_SIGNALS(self, data, meta):
         self._safe_call(self.handler._dump_signals, data, meta, "ECG_DUMP_SIGNALS")
+
+    def on_SHUTDOWN(self, data, meta):
+        self._safe_call(self.handler._shutdown, data, meta, "SHUTDOWN")
