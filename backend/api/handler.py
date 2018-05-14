@@ -1,8 +1,8 @@
 import os
-import sys
 import re
 import stat
 import json
+import signal
 import shutil
 import logging
 import threading
@@ -248,7 +248,7 @@ class EcgDirectoryHandler(RegexMatchingEventHandler):
 
     @synchronized
     def _shutdown(self, data, meta):
-        sys.exit()
+        os.kill(os.getpid(), signal.SIGINT)
 
     @synchronized
     def on_created(self, event):
