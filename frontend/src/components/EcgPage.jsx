@@ -5,11 +5,10 @@ import { inject, observer } from 'mobx-react'
 
 import LoadingSpinner from './LoadingSpinner.jsx'
 import EcgSignalPlot from './EcgSignalPlot.jsx'
-import Popup from './Popup.jsx'
 
 @inject("ecgStore")
 @observer
-export default class MainPage extends React.Component {
+export default class EcgPage extends React.Component {
   constructor (props) {
     super(props)
 
@@ -23,56 +22,24 @@ export default class MainPage extends React.Component {
       hideAnnotated: false,
       showGroups: [],
       searchString: '',
-      collapseAllGroups: true,
+      collapseGroups: true,
       showCommon: true,
       browserWidth: 0,
       browserHeight: 0,
-      currentEcgListKey: 0,
-      showPopup: false
+      currentEcgListKey: 0
     }
-
-    this.handleShowPopup = this.handleShowPopup.bind(this)
   }
 
-  handleAnnSelect (e) {
-    this.setState({annotation: this.state.annotation.concat(e.target.value)})
-  }
-
-  handleCollapseAllGroups (e) {
-    if (!this.state.collapseAllGroups) {
-      this.setState({showGroups: []})
+  handleShowGroups (value) {
+    if (this.state.showGroups.includes(value)) {
+      var filtered = this.state.showGroups.filter(t => t !== value)
+      this.setState({showGroups: filtered})
     } else {
-      var allGroups = []
-      for (let item of this.props.ecgStore.annotationList.values()) {
-        item.annotations.length > 0 ? allGroups.push(item.id) : null
-      }
-      this.setState({showGroups: allGroups})
+      this.setState({showGroups: this.state.showGroups.concat(value)})
     }
-    this.setState({collapseAllGroups: !this.state.collapseAllGroups})
   }
 
-  handleCollapseCommon (e) {
-    this.setState({showCommon: !this.state.showCommon})
-  }
-
-  handleEcgSelect (e) {
-    this.setState({pid: e.target.value})
-  }
-
-  handleHideAnnotated (e) {
-    this.setState({hideAnnotated: !this.state.hideAnnotated})
-  }
-
-  handleLayoutChange (e) {
-    this.setState({viewAllChannels: !this.state.viewAllChannels})
-  }
-
-  handleSelectChannel (e) {
-    let value = parseInt(e.target.value)
-    this.setState({selectedChannel: value})
-  }
-
-  handleSetAnnotation (e) {
+  handleCheckAnnotation (e) {
     let value = e.target.value
     if (this.state.annotation.includes(value)) {
       var filtered = this.state.annotation.filter(t => t !== value)
@@ -82,42 +49,68 @@ export default class MainPage extends React.Component {
     }
   }
 
-  handleShowGroup (value) {
-    if (this.state.showGroups.includes(value)) {
-      var filtered = this.state.showGroups.filter(t => t !== value)
-      this.setState({showGroups: filtered})
-    } else {
-      this.setState({showGroups: this.state.showGroups.concat(value)})
-    }
+  handleHideAnnotated (e) {
+    this.setState({hideAnnotated: !this.state.hideAnnotated})
   }
 
-  handleShowPopup (value) {
-    this.setState({showPopup: value})
+  handleCollapseGroups (e) {
+    if (!this.state.collapseGroups) {
+      this.setState({showGroups: []})
+    } else {
+      var allGroups = []
+      for (let item of this.props.ecgStore.annotationList.values()) {
+        item.annotations.length > 0 ? allGroups.push(item.id) : null
+      }
+      this.setState({showGroups: allGroups})
+    }
+    this.setState({collapseGroups: !this.state.collapseGroups})
+  }
+
+  handleCollapseCommon (e) {
+    this.setState({showCommon: !this.state.showCommon})
+  }
+
+  handleAllChannels (e) {
+    this.setState({allChannels: !this.state.allChannels})
+  }
+
+  handleSelectChannel (e) {
+    let value = parseInt(e.target.value)
+    this.setState({selectedChannel: value})
+  }
+
+  handleLayoutChange (e) {
+    this.setState({viewAllChannels: !this.state.viewAllChannels})
+  }
+
+  handleSubmit (e) {
+    let pid = this.state.pid
+    var item = this.props.ecgStore.items.get(pid)
+
+    item.annotation = this.state.annotation
+    item.is_annotated = true
+    this.props.ecgStore.setAnnotation(pid, this.state.annotation)
+    this.setState({annotation: []})
   }
 
   handleSort (e) {
     this.setState({descentSort: !this.state.descentSort})
   }
 
-  handleSubmit (e) {
-    let pid = this.state.pid
-    var item = this.props.ecgStore.items.get(pid)
-    item.annotation = this.state.annotation
-    item.isAnnotated = true
-    this.props.ecgStore.setAnnotation(pid, this.state.annotation)
-    this.setState({annotation: []})
+  handleAnnSelect (e) {
+    this.setState({annotation: this.state.annotation.concat(e.target.value)})
   }
 
-  countAnnotated () {
-    return this.props.ecgStore.items.values().filter((x) => x.isAnnotated).length
+  handleEcgSelect (e) {
+    this.setState({pid: e.target.value})
   }
 
   showEcgName (item, index) {
     return (
-      !(this.state.hideAnnotated & item.isAnnotated)
+      !(this.state.hideAnnotated & item.is_annotated)
         ? <option value={item.id}
           key={index}
-          style={{color: item.isAnnotated ? '#28a745' : 'black'}}
+          style={{color: item.is_annotated ? '#28a745' : 'black'}}
           className='ecg-item-name'>
           {item.timestamp.slice(0, 5) + item.timestamp.slice(10, 16)}
         </option>
@@ -125,18 +118,18 @@ export default class MainPage extends React.Component {
     )
   }
 
-  parseEcgDate (str) {
-    return new Date(str.slice(6, 10) + '-' +
-      str.slice(3, 5) + '-' +
-      str.slice(0, 2) + 'T' +
-      str.slice(11, 19))
+  sortedList () {
+    function parseEcgDate (str) {
+      return new Date(str.slice(6, 10) + '-' +
+                            str.slice(3, 5) + '-' +
+                            str.slice(0, 2) + 'T' +
+                            str.slice(11, 19))
     }
 
-  sortedList () {
-    let that = this
     var sorted = this.props.ecgStore.items.values().sort(function (a, b) {
-      return (that.parseEcgDate(b.timestamp) - that.parseEcgDate(a.timestamp))
+      return (parseEcgDate(b.timestamp) - parseEcgDate(a.timestamp))
     })
+
     if (this.state.descentSort) {
       return (
         sorted.map((item, index) => this.showEcgName(item, index))
@@ -148,22 +141,20 @@ export default class MainPage extends React.Component {
     }
   }
 
-  renderCheckBox () {
-    let item = this.props.ecgStore.get(this.state.pid)
-    if (item.signame !== null) {
-      let channels = [...Array(item.signame.length).keys()]
-      return (
-        <Row className='button-group'>
-          {channels.map((x, key) => <Button value={x}
-            key={key}
-            type='submit'
-            className='set-channel'
-            onClick={this.handleSelectChannel.bind(this)}
-            bsStyle={(this.state.selectedChannel === x)
-              ? 'primary' : 'default'}>{item.signame[x]}</Button>)}
-        </Row>
-      )
-    }
+  renderEcgList () {
+    return (
+      <Row>
+        <FormGroup controlId='formControlsSelectMultiple' key={this.state.currentEcgListKey}>
+          <FormControl componentClass='select'
+            className='ecg-list'
+            multiple
+            value={this.state.pid !== null ? [this.state.pid] : ['']}
+            onChange={this.handleEcgSelect.bind(this)}>
+            { this.sortedList() }
+          </FormControl>
+        </FormGroup>
+      </Row>
+    )
   }
 
   renderCommonItems (diagnose, index) {
@@ -171,7 +162,7 @@ export default class MainPage extends React.Component {
       <Checkbox value={diagnose}
         key={index}
         checked={this.state.annotation.includes(diagnose)}
-        onChange={this.handleSetAnnotation.bind(this)}>
+        onChange={this.handleCheckAnnotation.bind(this)}>
         { diagnose.split('/').slice(-1)[0] }
       </Checkbox>
     )
@@ -184,7 +175,7 @@ export default class MainPage extends React.Component {
           <Checkbox value={groupName}
             key={index}
             checked={this.state.annotation.includes(groupName)}
-            onChange={this.handleSetAnnotation.bind(this)}>
+            onChange={this.handleCheckAnnotation.bind(this)}>
             {groupName}
           </Checkbox>
         )
@@ -194,7 +185,7 @@ export default class MainPage extends React.Component {
       let isCollapsed = !(this.state.showGroups.includes(groupName) || (this.state.searchString.length > 0))
       return (
         <Row className={isCollapsed ? 'collapsed-group' : 'enrolled-group'} key={index}>
-          <span value={groupName} onClick={this.handleShowGroup.bind(this, groupName)}>
+          <span value={groupName} onClick={this.handleShowGroups.bind(this, groupName)}>
             <Icon name={!isCollapsed ? 'angle-down' : 'angle-right'} />
             <span className='group-name'>{groupName}</span>
           </span>
@@ -205,7 +196,7 @@ export default class MainPage extends React.Component {
                 <Checkbox value={groupName + '/' + item}
                   key={index}
                   checked={this.state.annotation.includes(groupName + '/' + item)}
-                  onChange={this.handleSetAnnotation.bind(this)}>{item}</Checkbox>)
+                  onChange={this.handleCheckAnnotation.bind(this)}>{item}</Checkbox>)
               }
             </Row>
             : null
@@ -226,20 +217,22 @@ export default class MainPage extends React.Component {
     )
   }
 
-  renderEcgList () {
-    return (
-      <Row>
-        <FormGroup controlId='formControlsSelectMultiple' key={this.state.currentEcgListKey}>
-          <FormControl componentClass='select'
-            className='ecg-list'
-            multiple
-            value={this.state.pid !== null ? [this.state.pid] : ['']}
-            onChange={this.handleEcgSelect.bind(this)}>
-            { this.sortedList() }
-          </FormControl>
-        </FormGroup>
-      </Row>
-    )
+  renderCheckBox () {
+    let item = this.props.ecgStore.get(this.state.pid)
+    if (item.signame !== null) {
+      let channels = [...Array(item.signame.length).keys()]
+      return (
+        <Row className='button-group'>
+          {channels.map((x, key) => <Button value={x}
+            key={key}
+            type='submit'
+            className='set-channel'
+            onClick={this.handleSelectChannel.bind(this)}
+            bsStyle={(this.state.selectedChannel === x)
+              ? 'primary' : 'default'}>{item.signame[x]}</Button>)}
+        </Row>
+      )
+    }
   }
 
   renderEcgPlot () {
@@ -309,22 +302,15 @@ export default class MainPage extends React.Component {
       browserHeight: window.innerHeight})
   }
 
-  closeEvent () {
-    this.props.ecgStore.shutdown()
-  }
-
   componentDidMount () {
     this.updateDimensions()
     window.addEventListener('resize', this.updateDimensions.bind(this))
-    window.addEventListener('beforeunload', this.closeEvent.bind(this))
   }
 
-
   render () {
-    if (!this.props.ecgStore.readyEcgList ||
-        !this.props.ecgStore.readyAnnotationList) {
+    if (!this.props.ecgStore.readyEcgList || !this.props.ecgStore.readyAnnotationList) {
       return (
-        <LoadingSpinner text='Получение данных от сервера' />
+        <LoadingSpinner text='Ожидание соединения с сервером' />
       )
     } else {
       return (
@@ -332,53 +318,41 @@ export default class MainPage extends React.Component {
           <Grid fluid>
             <Row>
               <Col className='left-column'>
-                <Row>
-                  <span className='headline'>Список ЭКГ</span>
-                </Row>
-                <Row>
-                  <a href='#'
-                    className='inline-controll margin-top'
-                    onClick={this.handleHideAnnotated.bind(this)}>
-                    {this.state.hideAnnotated ? 'Показать все' : 'На расшифровку'}
-                  </a>
-                </Row>
-                <Row>
-                  <a href='#'
-                    className='inline-controll'
-                    onClick={this.handleSort.bind(this)}>
-                    {this.state.descentSort ? 'Сначала старые' : 'Сначала новые'}
-                  </a>
-                </Row>
-                <Row>
-                  {this.renderEcgList()}
-                </Row>
-                <Row className='zip-bottom'>
-                  {(this.state.showPopup)
-                    ? <Popup handleShowPopup={this.handleShowPopup} />
-                    : null
-                  }
-                  <Button type='submit'
-                    bsStyle='default'
-                    className='submit'
-                    disabled={this.countAnnotated() === 0}
-                    onClick={() => this.handleShowPopup(true)}>В архив ({this.countAnnotated()})</Button>
-                </Row>
+                <div>
+                  <Row>
+                    <span className='headline'>Список ЭКГ</span>
+                  </Row>
+                  <Row>
+                    <a href='#' className='inline-controll margin-top' onClick={this.handleHideAnnotated.bind(this)}>
+                      {this.state.hideAnnotated ? 'Показать все' : 'На расшифровку'}
+                    </a>
+                  </Row>
+                  <Row>
+                    <a href='#' className='inline-controll' onClick={this.handleSort.bind(this)}>
+                      {this.state.descentSort ? 'Сначала старые' : 'Сначала новые'}
+                    </a>
+                  </Row>
+                  <Row>
+                    {this.renderEcgList()}
+                  </Row>
+                </div>
               </Col>
               <Col className='middle-column'>
                 <Row className='headline'>
-                  Результат расшифровки
+                            Результат расшифровки
                 </Row>
                 <Row className='margin-top'>
                   {(this.props.ecgStore.items.get(this.state.pid) !== undefined)
-                    ? ((this.props.ecgStore.items.get(this.state.pid).isAnnotated)
-                      ? this.props.ecgStore.items.get(this.state.pid).annotation.map(x => { return x.split('/').slice(-1)[0] }).join(', ')
+                    ? ((this.props.ecgStore.items.get(this.state.pid).is_annotated)
+                      ? this.props.ecgStore.items.get(this.state.pid).annotation.map(x =>
+                        { return x.split('/').slice(-1)[0] }).join(', ')
                       : 'Выберите значения из справочника и нажмите кнопку Сохранить'
                     )
                     : null
                   }
                 </Row>
                 <Row className='headline margin-top'>
-                  Просмотр ЭКГ
+                            Просмотр ЭКГ
                   {(this.props.ecgStore.items.get(this.state.pid) !== undefined)
                     ? ' ' + this.props.ecgStore.items.get(this.state.pid).timestamp
                     : null
@@ -394,16 +368,15 @@ export default class MainPage extends React.Component {
                 </Row>
                 {(this.props.ecgStore.items.values().length === 0)
                   ? <Row><span className='centered-text'>Список ЭКГ пуст</span></Row>
-                  : ((this.state.pid !== null & this.state.showPopup === false)
+                  : ((this.state.pid !== null)
                     ? <Row>{this.renderEcgPlot()}</Row>
                     : <Row><span className='centered-text'>Выберите ЭКГ из списка</span></Row>
                   )
                 }
               </Col>
-              <div className='vline' />
-              <Col className='right-column'>
+              <Col className='right-column solid-border-left'>
                 <Row className='headline'>
-                  Расшифровка ЭКГ
+                            Расшифровка ЭКГ
                 </Row>
                 <Row>
                   <span className='headline subsection'><span>Популярное</span>
@@ -424,8 +397,8 @@ export default class MainPage extends React.Component {
                 <Row>
                   <span className='headline subsection2'>
                     <span>Справочник</span>
-                    <a href='#' onClick={this.handleCollapseAllGroups.bind(this)}>
-                      {this.state.collapseAllGroups ? 'развернуть' : 'свернуть'}
+                    <a href='#' onClick={this.handleCollapseGroups.bind(this)}>
+                      {this.state.collapseGroups ? 'развернуть' : 'свернуть'}
                     </a>
                   </span>
                 </Row>

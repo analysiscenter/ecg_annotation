@@ -107,6 +107,10 @@ export default class EcgStore {
     this.server.send(API_Events.ECG_DUMP_SIGNALS)
   }
 
+  shutdown () {
+    this.server.send(API_Events.SHUTDOWN)
+  }
+
   get (id) {
     const item = this.items.get(id)
     if (item !== undefined) {

@@ -1,8 +1,8 @@
 {
-    "watch_dir": "C:\\SCS\\ServerA\\Data\\Inbox\\",
-    "dump_dir": "C:\\SCS\\ServerA\\Data\\Dump\\",
+    "watch_dir": "C:\\Users\\anton\\Desktop\\gui\\backend-ecg_annotation\\data",
+    "dump_dir": "C:\\Users\\anton\\Desktop\\gui\\backend-ecg_annotation\\data\\",
     "annotation_list_path": ".\\backend\\config\\annotation_list.json",
-    "annotation_count_path": "C:\\SCS\\ServerA\\Data\\Inbox\\annotation_count.json",
-    "submitted_annotation_path": "C:\\SCS\\ServerA\\Data\\Inbox\\annotation.feather",
+    "annotation_count_path": "C:\\Users\\anton\\Desktop\\gui\\backend-ecg_annotation\\data\\annotation_count.json",
+    "submitted_annotation_path": "C:\\Users\\anton\\Desktop\\gui\\backend-ecg_annotation\\data\\annotation.feather",
     "logger_config_path": ".\\backend\\config\\logger_config.json"
 }
