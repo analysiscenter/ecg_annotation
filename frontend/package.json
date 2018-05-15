@@ -3,7 +3,7 @@
   "productName": "CardioClick",
   "version": "0.0.1",
   "main": "main.js",
-  "repository": "https://github.com/analysiscenter/ecg_demo.git",
+  "repository": "https://github.com/analysiscenter/ecg_annotation.git",
   "author": "Roman Kh <rhudor@gmail.com>",
   "license": "Apache-2.0",
   "scripts": {
