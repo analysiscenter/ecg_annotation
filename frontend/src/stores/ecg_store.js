@@ -49,7 +49,6 @@ export default class EcgStore {
 
   @action
   onGotList (data, meta) {
-    console.log('onGotList')
     var newIds = []
     for (let item of data) {
       if (!this.items.has(item.id)) {

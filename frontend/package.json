@@ -1,13 +1,17 @@
 {
   "name": "CardioClick",
+  "productName": "CardioClick",
   "version": "0.0.1",
   "main": "main.js",
-  "repository": "https://github.com/analysiscenter/ecg_annotation.git",
+  "repository": "https://github.com/analysiscenter/ecg_demo.git",
   "author": "Roman Kh <rhudor@gmail.com>",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "scripts": {
-    "start": "webpack-dev-server",
-    "el": "webpack -d && electron ."
+    "start": "webpack-dev-server -d",
+    "build": "webpack -p",
+    "el:compile": "webpack -d && electron .",
+    "el:start": "electron .",
+    "el:build": "electron-packager ."
   },
   "dependencies": {
     "empty-module": "^0.0.2",
@@ -29,7 +33,7 @@
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
     "css-loader": "^0.28.5",
-    "electron": "^1.8.4",
+    "electron": "1.8.6",
     "file-loader": "^1.1.11",
     "html-webpack-plugin": "^3.2.0",
     "style-loader": "^0.18.2",
