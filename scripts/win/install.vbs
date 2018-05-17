@@ -4,5 +4,5 @@ lnk_path = WshShell.SpecialFolders("Desktop") & "\CardioClick.lnk"
 Set lnk = WshShell.CreateShortcut(lnk_path)
 lnk.WorkingDirectory = script_dir
 lnk.TargetPath = script_dir & "\run.vbs"
-lnk.IconLocation = script_dir & "\frontend\public\logo.ico"
+lnk.IconLocation = script_dir & "\..\..\frontend\public\logo.ico"
 lnk.Save

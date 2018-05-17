@@ -7,8 +7,8 @@ def is_open_port(port):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:
         sock.bind(("", port))
-    except OSError as e:
-        print(e)
+    except OSError as error:
+        print(error)
         return True
     sock.close()
     return False
@@ -20,16 +20,16 @@ def run(path, cmd):
 
 
 def main():
-    script_path = os.path.dirname(os.path.abspath(__file__))
+    root_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 
     # frontend
-    path = os.path.join(script_path, "frontend")
+    path = os.path.join(root_path, "frontend")
     cmd = "yarn el:start"
     run(path, cmd)
 
     # backend
     if not is_open_port(9090):
-        path = script_path
+        path = root_path
         cmd = "python {}".format(os.path.join(".", "backend", "server.py"))
         run(path, cmd)
 
