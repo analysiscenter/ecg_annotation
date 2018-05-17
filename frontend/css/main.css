@@ -38,8 +38,9 @@ body {
 }
 
 .page .right-column {
+    position: fixed;
+    right: 0.65rem;
     width: 8rem;
-    flex: right;
     display: block;
     padding-left: 0.5rem;
 }

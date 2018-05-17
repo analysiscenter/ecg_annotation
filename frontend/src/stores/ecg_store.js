@@ -83,8 +83,12 @@ export default class EcgStore {
 
   @action
   onGotItemData (data, meta) {
-    extendObservable(this.items.get(data.id), data)
-    this.items.get(data.id).waitingData = false
+    const item = this.items.get(data.id)
+    extendObservable(item, data)
+    if (data.annotation.length > 0) {
+      item.isAnnotated = true
+    }
+    item.waitingData = false
   }
 
   getItemData (id) {
