@@ -1,4 +1,5 @@
 {
+	"is_shutdown_enabled": true,
     "watch_dir": "C:\\SCS\\ServerA\\Data\\Inbox\\",
     "dump_dir": "C:\\SCS\\ServerA\\Data\\Dump\\",
     "annotation_list_path": ".\\backend\\config\\annotation_list.json",

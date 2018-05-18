@@ -35,6 +35,7 @@ def get_configs():
     args = parser.parse_args()
 
     REQUIRED_KEYS = {
+        "is_shutdown_enabled",
         "watch_dir",
         "dump_dir",
         "annotation_list_path",
