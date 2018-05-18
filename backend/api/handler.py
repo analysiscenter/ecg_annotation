@@ -208,6 +208,7 @@ class EcgDirectoryHandler(RegexMatchingEventHandler):
             self.annotation_count_dict[new_annotation] += 1
         self._dump_annotation()
         self.namespace.on_ECG_GET_COMMON_ANNOTATION_LIST({}, {})
+        self.namespace.on_ECG_GET_ITEM_DATA({"id": sha}, {})
 
     @synchronized
     def _dump_signals(self, data, meta):
