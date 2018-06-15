@@ -2,6 +2,7 @@ import os
 import re
 import stat
 import json
+import signal
 import shutil
 import logging
 import threading
@@ -207,6 +208,7 @@ class EcgDirectoryHandler(RegexMatchingEventHandler):
             self.annotation_count_dict[new_annotation] += 1
         self._dump_annotation()
         self.namespace.on_ECG_GET_COMMON_ANNOTATION_LIST({}, {})
+        self.namespace.on_ECG_GET_ITEM_DATA({"id": sha}, {})
 
     @synchronized
     def _dump_signals(self, data, meta):
@@ -244,6 +246,10 @@ class EcgDirectoryHandler(RegexMatchingEventHandler):
         self.logger.info("Dump finished into {}".format(archive_name))
         self._log_data()
         self.namespace.on_ECG_GET_LIST({}, {})
+
+    @synchronized
+    def _shutdown(self, data, meta):
+        os.kill(os.getpid(), signal.SIGINT)
 
     @synchronized
     def on_created(self, event):

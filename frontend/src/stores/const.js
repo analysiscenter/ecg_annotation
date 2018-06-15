@@ -19,7 +19,8 @@ const ECG_Requests = keyMirror({
   ECG_SET_ANNOTATION: null,
   ECG_DUMP_SIGNALS: null,
   ECG_GET_ANNOTATION_LIST: null,
-  ECG_GET_COMMON_ANNOTATION_LIST: null
+  ECG_GET_COMMON_ANNOTATION_LIST: null,
+  SHUTDOWN: null
 })
 
 const ECG_Responses = keyMirror({

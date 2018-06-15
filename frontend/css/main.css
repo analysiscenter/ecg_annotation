@@ -38,8 +38,9 @@ body {
 }
 
 .page .right-column {
+    position: fixed;
+    right: 0.65rem;
     width: 8rem;
-    flex: right;
     display: block;
     padding-left: 0.5rem;
 }
@@ -89,6 +90,11 @@ body {
 	font-weight: 100;
 }
 
+.page .ecg-list:active, .ecg-list:focus {
+    outline: 0;
+    box-shadow: 0 0 0 0;
+}
+
 .page .ecg-list.form-control {
     padding: 0;
     font-family: "Roboto Condensed", sans-serif;
@@ -132,9 +138,9 @@ body {
     margin-left: 0;
 }
 
-.page .btn.active.focus, .btn.active:focus, .btn.focus, .btn:active.focus, .btn:active:focus, .btn:focus {
+.page .btn:active, .btn:focus {
     outline: 0;
-    box-shadow: 0 0 0 0 rgba(0,123,255,0);
+    box-shadow: 0 0 0 0;
 }
 
 .page .button-group {

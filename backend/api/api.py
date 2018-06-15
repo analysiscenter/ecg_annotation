@@ -10,7 +10,7 @@ def create_namespace(server_config):
     logger = logging.getLogger("server." + __name__)
 
     logger.info("Creating annotation namespace")
-    namespace = AnnotationNamespace("/api")
+    namespace = AnnotationNamespace("/api", is_shutdown_enabled=server_config.pop("is_shutdown_enabled"))
     handler = EcgDirectoryHandler(**server_config, ignore_directories=True)
     namespace.handler = handler
     handler.namespace = namespace
@@ -25,6 +25,10 @@ def create_namespace(server_config):
 
 
 class AnnotationNamespace(BaseNamespace):
+    def __init__(self, *args, is_shutdown_enabled, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.is_shutdown_enabled = is_shutdown_enabled
+
     def on_ECG_GET_ANNOTATION_LIST(self, data, meta):
         self._safe_call(self.handler._get_annotation_list, data, meta, "ECG_GET_ANNOTATION_LIST",
                         "ECG_GOT_ANNOTATION_LIST")
@@ -44,3 +48,7 @@ class AnnotationNamespace(BaseNamespace):
 
     def on_ECG_DUMP_SIGNALS(self, data, meta):
         self._safe_call(self.handler._dump_signals, data, meta, "ECG_DUMP_SIGNALS")
+
+    def on_SHUTDOWN(self, data, meta):
+        if self.is_shutdown_enabled and self.n_connected == 1:
+            self._safe_call(self.handler._shutdown, data, meta, "SHUTDOWN")
