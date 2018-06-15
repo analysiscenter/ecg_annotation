@@ -9,7 +9,7 @@ import numpy as np
 CURRENT_PATH = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(1, os.path.join(CURRENT_PATH, "ecg"))
 from cardio.core.ecg_batch_tools import load_xml_schiller
-from cardio.core.utils import get_multiplier
+from cardio.core.utils import get_units_conversion_factor
 
 
 def sha256_checksum(path, block_size=2**16):
@@ -23,9 +23,9 @@ def sha256_checksum(path, block_size=2**16):
 def _convert_units(signal, meta, units):
     old_units = meta["units"]
     new_units = [units] * len(old_units)
-    multiplier = [get_multiplier(old, new) for old, new in zip(old_units, new_units)]
-    multiplier = np.array(multiplier).reshape(-1, 1)
-    signal *= multiplier
+    factors = [get_units_conversion_factor(old, new) for old, new in zip(old_units, new_units)]
+    factors = np.array(factors).reshape(-1, 1)
+    signal *= factors
     meta["units"] = np.asarray(new_units)
     return signal, meta
 
